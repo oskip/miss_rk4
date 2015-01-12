@@ -16,20 +16,10 @@ namespace MiSS_RK4
                 var x0 = Double.Parse(args[0]);
                 var precision = Int32.Parse(args[1]);
 
-                Equation parameters = new Equation(new Dictionary<float, float>()
-                                                    {
-                                                        //Współczynniki przy potęgach x
-                                                        //np. {0, 3.5f}, {2, -5f} to: 3.5 + -5x^2
-                                                        {0f, 3.5f}, {1f, 2.5f}, {2f, -5f}
-                                                    },
-                                                    new Dictionary<float, float>()
-                                                    {
-                                                        //Współczynniki przy potęgach e
-                                                        //np. {1, 2}, {3, -4f} to: 2e^t - 4e^3t
-                                                        {1f, 2f}
-                                                    }
-                );
-                var results = new RungeKutta4(parameters, precision, x0);
+                Func<double, double, double> expression = 
+                    (x, t) => 4.5*Math.Pow(x, 3) + 2*Math.Pow(x, 2) - 18.63 + Math.Exp(2*t);
+
+                var results = new RungeKutta4(expression, precision, x0);
 
             }
             catch (Exception ex)
