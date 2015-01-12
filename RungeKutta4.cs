@@ -1,24 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MiSS_RK4
 {
     public class RungeKutta4
     {
-        private Func<double, double, double> expression;
-        private int iteration = 0;
-        private double y_t, y_tn, k1, k2, k3, k4, h, precision;
+        private readonly Func<double, double, double> f;
+        private double y_t, k1, k2, k3, k4, h, t_i;
         
-        public RungeKutta4(Func<double, double, double> expression, int precision, double x0)
+        public RungeKutta4(Func<double, double, double> f, double step, double x0)
         {
-            y_tn = k1 = k2 = k3 = k4 = h = 0;
-            this.expression = expression;
-            this.precision = precision;
+            k1 = k2 = k3 = k4 = h = t_i = 0;
+            this.f = f;
+            this.h = step;
             this.y_t = x0;
         }
 
-        public double Go()
+        public IEnumerable<double> Go()
         {
-            throw new NotImplementedException();
+            for (; t_i < 1; t_i += h)
+            {
+                if (t_i + h > 1) h = 1 - t_i;
+                k1 = f(t_i, y_t);
+                k2 = f(t_i + 0.5*h, y_t + 0.5*k1*h);
+                k3 = f(t_i + 0.5*h, y_t + 0.5*k2*h);
+                k4 = f(t_i + h, y_t + k3*h);
+
+                y_t += (1/6d)*(k1 + 2*k2 + 2*k3 + k4)*h;
+                yield return y_t;
+            }
         }
     }
 }
