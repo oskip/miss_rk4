@@ -17,7 +17,7 @@ namespace MiSS_RK4
             InitializeComponent();
         }
 
-        private void drawChart(List<double> points, double step)
+        private void drawChart(List<Tuple<double, double>> points, double step)
         {
             double x = 0;
             //Utworzenie serii danych
@@ -27,10 +27,11 @@ namespace MiSS_RK4
             // brak oznaczeń na lini
             s.MarkerStyle = MarkerStyle.None;
             int i = 0;
-            foreach (double point in points)
+            s.Points.AddXY(0, x0);
+            foreach (Tuple<double, double> point in points)
             {
-                s.Points.AddXY(x, point);
-                x += step;
+                s.Points.AddXY(point.Item1, point.Item2);
+                
             }
 
             bool contains = false;
@@ -69,7 +70,7 @@ namespace MiSS_RK4
                 (t, x) => -0.5 * x + 4 * Math.Exp(0.8 * t);
 
             var results = new RungeKutta4(expression, step, x0).Go();
-            List<double> resultsList = new List<double>(results.ToList());
+            List<Tuple<double, double>> resultsList = new List<Tuple<double, double>>(results.ToList());
             drawChart(resultsList, step);
         }
 
